@@ -13,14 +13,20 @@
 #include <MutexContainer.hxx>
 #include <ChartTypeTemplate.hxx>
 #include <OPropertySet.hxx>
+#include <MutexContainer.hxx>
 #include <ServiceMacros.hxx>
+
+#include <comphelper/uno3.hxx>
 
 namespace chart {
 
-class GL3DBarChartTypeTemplate : public ChartTypeTemplate
+class GL3DBarChartTypeTemplate :
+    public MutexContainer, public property::OPropertySet, public ChartTypeTemplate
 {
 public:
     APPHELPER_XSERVICEINFO_DECL()
+
+    DECLARE_XINTERFACE()
 
     GL3DBarChartTypeTemplate(
         const css::uno::Reference<
@@ -39,6 +45,17 @@ public:
 
     virtual sal_Bool SAL_CALL supportsCategories()
         throw (::css::uno::RuntimeException, ::std::exception);
+
+    // OPropertySet
+    virtual css::uno::Any GetDefaultValue( sal_Int32 nHandle ) const
+        throw (css::beans::UnknownPropertyException);
+
+    virtual cppu::IPropertyArrayHelper& SAL_CALL getInfoHelper();
+
+    // XPropertySet
+    virtual css::uno::Reference<css::beans::XPropertySetInfo> SAL_CALL
+        getPropertySetInfo()
+            throw (css::uno::RuntimeException, std::exception);
 };
 
 }
